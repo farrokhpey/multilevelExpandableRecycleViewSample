@@ -22,12 +22,14 @@ public class MainActivity extends AppCompatActivity {
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
         ArrayList<Categories> categories = new ArrayList<>(Arrays.asList(gson.fromJson(json, Categories[].class)));
-        categoriesAdapter adapter=new categoriesAdapter(this, categories, 0);
+        categoriesAdapter adapter = new categoriesAdapter(this, categories, 0);
 
         RecyclerView recycler_content = findViewById(R.id.recycler_content);
         recycler_content.setLayoutManager(new LinearLayoutManager(this));
         recycler_content.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         recycler_content.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
+        adapter.expandGroup(0,0);
     }
 }

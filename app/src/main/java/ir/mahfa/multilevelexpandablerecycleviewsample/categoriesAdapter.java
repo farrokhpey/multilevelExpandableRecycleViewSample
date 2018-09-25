@@ -20,11 +20,11 @@ import java.util.ArrayList;
 
 public class categoriesAdapter extends RecyclerView.Adapter<categoriesAdapter.categoriesViewHolder> {
 
-    Context mContext;
-    ArrayList<Categories> mCategoriesList;
-    int mLevel;
+    private Context mContext;
+    private ArrayList<Categories> mCategoriesList;
+    private int mLevel;
 
-    public categoriesAdapter(Context context, ArrayList<Categories> categoriesList, int level) {
+    categoriesAdapter(Context context, ArrayList<Categories> categoriesList, int level) {
         this.mContext = context;
         this.mCategoriesList = categoriesList;
         this.mLevel = level;
@@ -89,14 +89,21 @@ public class categoriesAdapter extends RecyclerView.Adapter<categoriesAdapter.ca
                         categoriesAdapter adapter = new categoriesAdapter(context, item.categories, 2);
                         inner_recyclerview.setLayoutManager(new GridLayoutManager(context, 2));
                         inner_recyclerview.setAdapter(adapter);
+                        if (item.expanded) {
+                            inner_recyclerview.setVisibility(View.VISIBLE);
+                            image_expandCollapse.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_arrow_drop_up_black_24dp));
+                        } else {
+                            inner_recyclerview.setVisibility(View.GONE);
+                            image_expandCollapse.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_arrow_drop_down_black_24dp));
+                        }
                         adapter.notifyDataSetChanged();
                         image_expandCollapse.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                if(inner_recyclerview.getVisibility()==View.VISIBLE){
+                                if (inner_recyclerview.getVisibility() == View.VISIBLE) {
                                     inner_recyclerview.setVisibility(View.GONE);
                                     image_expandCollapse.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_arrow_drop_down_black_24dp));
-                                }else {
+                                } else {
                                     inner_recyclerview.setVisibility(View.VISIBLE);
                                     image_expandCollapse.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_arrow_drop_up_black_24dp));
                                 }
@@ -107,6 +114,16 @@ public class categoriesAdapter extends RecyclerView.Adapter<categoriesAdapter.ca
                 default:
                     break;
             }
+        }
+    }
+
+    public void expandGroup(int groupPosition, int childPosition) {
+        if (mCategoriesList != null &&
+                mCategoriesList.size() > groupPosition &&
+                mCategoriesList.get(groupPosition).categories != null &&
+                mCategoriesList.get(groupPosition).categories.size() > childPosition) {
+            mCategoriesList.get(groupPosition).categories.get(childPosition).expanded = true;
+            notifyItemChanged(groupPosition);
         }
     }
 }
